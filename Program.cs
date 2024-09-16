@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesAPI3.Repositories;
@@ -43,18 +42,21 @@ builder.Services.AddSwaggerGen(c =>
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:key"]);  //generacion de la clave
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>     //esquema de autenticacion el cual agrega los servicios necesarios para la autenticacion
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>              //Este bloque añade el esquema JWT Bearer, que es el que se utiliza para validar los tokens JWT.
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
+        ValidateAudience = false,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt: Issuer"],
-        ValidAudience = builder.Configuration["Jwt: Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
 
@@ -66,16 +68,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IActorServices, ActorService>();
-builder.Services.AddSingleton<IActorRepository, ActorRepository>();
+builder.Services.AddScoped<IActorServices, ActorService>();
+builder.Services.AddScoped<IActorRepository, ActorRepository>();
 
-builder.Services.AddSingleton<IDirectorRepository, DirectorRepository>();
-builder.Services.AddSingleton<IDirectorServices, DirectorService>();
+builder.Services.AddScoped<IDirectorServices, DirectorService>();
+builder.Services.AddScoped<IDirectorRepository, DirectorRepository>();
 
-builder.Services.AddSingleton<IReviewRepository, ReviewRepository>();
-builder.Services.AddSingleton<IReviewServices, ReviewService>();
-
-
+builder.Services.AddScoped<IExtraServices, ExtraService>();
+builder.Services.AddScoped<IExtraRepository, ExtraRepository>();
 
 
 var app = builder.Build();
@@ -88,49 +88,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication(); //se hace para poder utilizar el token en todos los controladores
 app.UseAuthorization();
-app.UseAuthentication();
-
-
 
 app.MapControllers();
 
 app.Run();
-
-//////////////////////////
-
-
-
-
-//// Configuración del servicio de autenticación
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = true,
-//        ValidateLifetime = true,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//        ValidAudience = builder.Configuration["Jwt:Audience"],
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-//    };
-//});
-
-//builder.Services.AddAuthorization();
-
-
-
-//// Configurar el middleware de autenticación y autorización
-//app.UseAuthentication();
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();
-

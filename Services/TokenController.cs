@@ -4,9 +4,10 @@ using MoviesAPI3.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace MoviesAPI3.Controllers
+namespace AnimeApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -21,7 +22,7 @@ namespace MoviesAPI3.Controllers
 
         // GET: api/<AuthenticationController>
         [HttpPost("login")]
-        public IActionResult Login([FromBody] Usuario login)
+        public IActionResult Login([FromBody] User login)
         {
             if (login.Username == "admin" && login.Password == "password")
             {

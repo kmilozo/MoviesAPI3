@@ -7,19 +7,58 @@ namespace MoviesAPI3.Services
 {
     public class DirectorService : IDirectorServices
     {
-        private IDirectorRepository _directorRepositori;
-        public DirectorService(IDirectorRepository directorRepositori)
+        private readonly IDirectorRepository _directorRepository;
+
+        public DirectorService(IDirectorRepository directorRepository)
         {
-            _directorRepositori = directorRepositori;
+            _directorRepository = directorRepository;
         }
-        public List<Director> GetDirectorsNationalitys(string nationality)
+
+        public void DeleteDirector(Guid id)
         {
-            var directors = _directorRepositori.GetDirectors();
-            return directors.Where(c => c.Nationality == nationality).ToList();
+
+            var director = _directorRepository.GetDirectors()
+                                         .FirstOrDefault(a => a.Id == id);
+            if (director != null)
+            {
+                _directorRepository.DeleteDirector(director);
+            }
         }
-        public List<Director> GetDirectors()
+
+        public void DeleteDirectorByName(string name)
         {
-            return _directorRepositori.GetDirectors();
+            var director = GetDirectorByName(name);
+            if (director != null)
+            {
+                _directorRepository.DeleteDirector(director);
+            }
+        }
+
+        public List<Director> GetDirectorByVisualStyle(string rolType)
+        {
+            return _directorRepository.GetDirectors()
+                            .Where(a => a.Name.ToLower() == rolType.ToLower())
+                            .ToList();
+        }
+
+        public Director GetDirectorById(Guid id)
+        {
+
+            return _directorRepository.GetDirectors()
+                                     .FirstOrDefault(a => a.Id == id);
+        }
+
+        public Director GetDirectorByName(string name)
+        {
+            return _directorRepository.GetDirectors()
+                                    .FirstOrDefault(a => a.Name.ToLower() == name.ToLower());
+        }
+
+        public List<Director> GetDirectorByRoltype(string rolType)
+        {
+            return _directorRepository.GetDirectors()
+                           .Where(a => a.RolType.ToLower() == rolType.ToLower())
+                           .ToList();
         }
     }
 }

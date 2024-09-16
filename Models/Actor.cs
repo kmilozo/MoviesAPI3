@@ -1,9 +1,9 @@
 ﻿namespace MoviesAPI3.Models
 {
-    public class Actor : NameEntity
+    public class Actor : ProductionRoles
     {
-        
-        public DateTime DateOfBirth { get; set; }
-        public string Name { get; set; }
+        public string ActingExperience { get; set; }
+        //public int DirectedProjects { get; set;}
+
     }
 }

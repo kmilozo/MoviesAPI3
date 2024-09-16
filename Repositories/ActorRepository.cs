@@ -7,18 +7,59 @@ namespace MoviesAPI3.Repositories
 {
     public class ActorRepository : IActorRepository
     {
+        private readonly List<Actor> _actors;
+        public ActorRepository()
+        {
+            _actors = new List<Actor>()
+            {
+               new Actor()
+               {
+                    Id = Guid.NewGuid(),
+                    Name = "Daniela",
+                    Age = 29,
+                    Nationality="Ftancia",
+                    RolType ="Actriz de reparto",
+                    ActingExperience = "7 años"
+
+               },
+                new Actor()
+               {
+                    Id = Guid.NewGuid(),
+                    Name = "Valeria",
+                    Age = 25,
+                    Nationality="Colombia",
+                    RolType ="Actriz Protagonista",
+                    ActingExperience = "20 años"
+
+               },
+                 new Actor()
+               {
+                    Id = Guid.NewGuid(),
+                    Name = "Cristian",
+                    Age = 30,
+                    Nationality="Colombia",
+                    RolType ="Actor de reparto",
+                    ActingExperience = "10 años"
+
+               },
+            };
+        }
+
+        public void DeleteActor(Actor actor)
+        {
+            _actors.Remove(actor);
+        }
+
+
+        public Actor GetActorById(Guid id)
+        {
+            // Buscar en la lista _aerials el objeto con el ID especificado
+            return _actors.FirstOrDefault(a => a.Id == id);
+        }
+
         public List<Actor> GetActors()
         {
-            return new List<Actor>()
-            {
-                new Actor() { Id = 1, Name = "Robert Downey Jr.", DateOfBirth = new DateTime(1965, 4, 4), Nationality = "American" },
-                new Actor() { Id = 2, Name = "Scarlett Johansson", DateOfBirth = new DateTime(1984, 11, 22), Nationality = "American" },
-                new Actor() { Id = 3, Name = "Chris Hemsworth", DateOfBirth = new DateTime(1983, 8, 11), Nationality = "Australian" },
-
-                new Actor() { Id = 4, Name = "Tom Hanks", DateOfBirth = new DateTime(1956, 7, 9), Nationality = "American" },
-                new Actor() { Id = 5, Name = "Natalie Portman", DateOfBirth = new DateTime(1981, 6, 9), Nationality = "Israeli-American" },
-                new Actor() { Id = 6, Name = "Daniel Radcliffe", DateOfBirth = new DateTime(1989, 7, 23), Nationality = "British" },
-            };
+            return _actors;
         }
     }
 }

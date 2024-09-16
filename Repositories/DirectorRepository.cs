@@ -7,17 +7,59 @@ namespace MoviesAPI3.Repositories
 {
     public class DirectorRepository : IDirectorRepository
     {
+        private readonly List<Director> _directors;
+        public DirectorRepository()
+        {
+            _directors = new List<Director>()
+            {
+               new Director()
+               {
+                    Id = Guid.NewGuid(),
+                    Name = "Daniela",
+                    Age = 29,
+                    Nationality="Ftancia",
+                    RolType ="Actriz de reparto",
+                    VisualStyle = "7 años"
+
+               },
+                new Director()
+               {
+                    Id = Guid.NewGuid(),
+                    Name = "Valeria",
+                    Age = 25,
+                    Nationality="Colombia",
+                    RolType ="Actriz Protagonista",
+                    VisualStyle = "20 años"
+
+               },
+                 new Director()
+               {
+                    Id = Guid.NewGuid(),
+                    Name = "Cristian",
+                    Age = 30,
+                    Nationality="Colombia",
+                    RolType ="Actor de reparto",
+                    VisualStyle = "10 años"
+
+               },
+            };
+        }
+
+        public void DeleteDirector(Director director)
+        {
+            _directors.Remove(director);
+        }
+
+
+        public Director GetDirectorById(Guid id)
+        {
+            // Buscar en la lista _aerials el objeto con el ID especificado
+            return _directors.FirstOrDefault(a => a.Id == id);
+        }
+
         public List<Director> GetDirectors()
         {
-            return new List<Director>()
-            {
-                new Director() { Id = 1, Name = "Steven Spielberg", DateOfBirth = new DateTime(1946, 12, 18), Nationality = "American" },
-                new Director() {  Id = 2, Name = "Christopher Nolan", DateOfBirth = new DateTime(1970, 7, 30), Nationality = "British-American" },
-                new Director() { Id = 3, Name = "Martin Scorsese", DateOfBirth = new DateTime(1942, 11, 17), Nationality = "American" },
-                new Director() { Id = 4, Name = "Quentin Tarantino", DateOfBirth = new DateTime(1963, 3, 27), Nationality = "American" },
-                new Director() { Id = 5, Name = "James Cameron", DateOfBirth = new DateTime(1954, 8, 16), Nationality = "Canadian" },
-                new Director() { Id = 6, Name = "Sofia Coppola", DateOfBirth = new DateTime(1971, 5, 14), Nationality = "American" },
-            };
+            return _directors;
         }
     }
 }

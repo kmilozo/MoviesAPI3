@@ -1,101 +1,85 @@
-﻿using MoviesAPI3.Models;
-using MoviesAPI3.Services.Interfaces;
+﻿using MoviesAPI3.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MoviesAPI3.Controllers
 {
-    [Authorize]
-    [ApiController]
     [Route("api/[controller]")]
-
-
+    [ApiController]
+    [Authorize]
     public class ActorsController : ControllerBase
     {
-        private IActorServices _actorService;
+        private readonly IActorServices _actorService;
 
-        public ActorsController(IActorServices actorServices)
+        public ActorsController(IActorServices actorService)
         {
-            this._actorService = actorServices;
+            _actorService = actorService;
         }
 
-        // GET: api/<ActorsController>
-        [HttpGet]
-        public ActionResult<IEnumerable<Actor>> Get()
+        // GET api/<AerialController>/habitat/{habitat}
+        [HttpGet("rolType/{rolType}")]
+        public IActionResult GetActorByRoltype(string rolType)
         {
-            // return Ok(new Actor[] { new Actor(), new Actor() });
-            var actors = _actorService.GetActors();
-            if (actors.Any())
+            var actor = _actorService.  GetActorByRoltype(rolType);
+            if (actor != null && actor.Any())
             {
-                return Ok(actors);
+                return Ok(actor);
             }
             else
             {
                 return NotFound();
             }
-
-            //return OK(_actorService.GetActors());
         }
-        //[HttpGet("dateofbirth /{dateofbirth}")]
-        //public ActionResult<IEnumerable<Actor>> GetActorsByDateOfBirth(datetime dateofbirth)
-        //{
-        //    var actorsByDateOfBirth = _actorService.GetActors()
-        //                                 .Where(actor => actor.DateOfBirth.ToLower() == dateofbirth.ToLower())
-        //                                 .ToList();
 
-        //    return actorsByDateOfBirth.Any() ? Ok(actorsByDateOfBirth) : NotFound();
-        //}
-        
-        [HttpGet("dateofbirth/{dateofbirth}")]
-        public IActionResult Get(DateTime dateofbirth)
+        // GET api/<ActorsController>/name/{name}
+        [HttpGet("name/{name}")]
+        public IActionResult GetByName(string name)
         {
-            if (dateofbirth == null)
+            var actor = _actorService.GetActorByName(name);
+            if (actor != null)
             {
-                return BadRequest();
+                return Ok(actor);
             }
             else
             {
-                var actors = _actorService.GetActorByDateOfBirth(dateofbirth);
-                if (actors != null && actors.Any())
-                {
-                    return Ok(actors);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return NotFound();
             }
         }
 
 
-        // GET api/<ActorsController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id) //IActionResult -> me garantiza que me va a devolver una respuesta http 
+        // GET api/<ActorController>/actingExperience/{actingExperience}
+        [HttpGet("actingExperience/{actingExperience}")]
+        public IActionResult GetActorByActingExperience(string actingExperinece)
         {
-            return Ok();
+            var actor = _actorService.GetActorByActingExperience(actingExperinece);
+            if (actor != null && actor.Any())
+            {
+                return Ok(actor);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
-        // POST api/<ActorsController>
-        [HttpPost]
-        public IActionResult Post([FromBody] Actor value)
-        {
-            return Ok();
-        }
 
-        // PUT api/<ActorsController>/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Actor value)
-        {
-            return Ok();
-        }
 
-        // DELETE api/<ActorsController>/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+
+
+
+        // DELETE api/<AerialController>/name/{name}
+        [HttpDelete("name/{name}")]
+        public IActionResult DeleteByName(string name)
         {
-            return Ok();
+            var actor = _actorService.GetActorByName(name);
+            if (actor == null)
+            {
+                return NotFound();
+            }
+
+            _actorService.DeleteActorByName(name);
+            return NoContent();
         }
     }
 }

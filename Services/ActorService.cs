@@ -1,25 +1,84 @@
 ﻿using MoviesAPI3.Models;
 using MoviesAPI3.Repositories;
 using MoviesAPI3.Repositories.Interfaces;
+using MoviesAPI3.Services;
 using MoviesAPI3.Services.Interfaces;
+using System.Xml.Linq;
 
 namespace MoviesAPI3.Services
 {
     public class ActorService : IActorServices
     {
-        private IActorRepository _actorRepository;
-        public ActorService(IActorRepository actorRepository) 
+        private readonly IActorRepository _actorRepository;
+
+        public ActorService(IActorRepository actorRepository)
         {
             _actorRepository = actorRepository;
         }
-        public List<Actor> GetActorByDateOfBirth(DateTime dateofbirth)
+
+        public void DeleteActor(Guid id)
         {
-            var actors = _actorRepository.GetActors();
-            return actors.Where(c => c.DateOfBirth == dateofbirth).ToList();
+
+            var actor = _actorRepository.GetActors()
+                                         .FirstOrDefault(a => a.Id == id);
+            if (actor != null)
+            {
+                _actorRepository.DeleteActor(actor);
+            }
         }
-        public List<Actor> GetActors()
+
+        public void DeleteActorByName(string name)
         {
-            return _actorRepository.GetActors();
+            var actor = GetActorByName(name);
+            if (actor != null)
+            {
+                _actorRepository.DeleteActor(actor);
+            }
+        }
+
+        public List<Actor> GetActorByActingExperience(string rolType)
+        {
+            return _actorRepository.GetActors()
+                            .Where(a => a.Name.ToLower() == rolType.ToLower())
+                            .ToList();
+        }
+
+        public Actor GetActorById(Guid id)
+        {
+            
+            return _actorRepository.GetActors()
+                                     .FirstOrDefault(a => a.Id == id);
+        }
+
+        public Actor GetActorByName(string name)
+        {
+            return _actorRepository.GetActors()
+                                    .FirstOrDefault(a => a.Name.ToLower() == name.ToLower());
+        }
+
+        public List<Actor> GetActorByRoltype(string rolType)
+        {
+            return _actorRepository.GetActors()
+                           .Where(a => a.RolType.ToLower() == rolType.ToLower())
+                           .ToList();
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
